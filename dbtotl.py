@@ -1,3 +1,25 @@
+# Variable names are the same as the element they represent in JMdict_e.xml
+# 
+# NAMING DEFINITIONS
+# 
+# entry = Entries consist of kanji elements, reading elements, 
+# general information and sense elements.
+# ----
+# pos = part-of-speech.
+# ----
+# keb = This element will contain a word or short phrase in Japanese 
+# 	which is written using at least one non-kana character (usually kanji,
+# 	but can be other characters)
+# ----
+# sense = The sense element will record the translational equivalent
+# 	of the Japanese word, plus other related information.
+# ----
+# kele = k_ele(kanji element)
+# ----
+# rele = r_ele(reading element, contains valid readings)
+# -----------------------------------------------------------
+
+
 import csv
 import xml.etree.cElementTree as ET
 import time
@@ -6,16 +28,12 @@ import sqlite3
 db = sqlite3.connect(':memory:')
 db = sqlite3.connect('vocab.db')
 cursor =db.cursor()
-#cursor.execute('''CREATE TABLE export(phrase TEXT, word TEXT)''')
-#db.commit()
-#cursor.execute('''INSERT INTO export(phrase,word) SELECT (phrase,word) FROM LOOKUPS''')
-#db.commit()
 
 cursor.execute('''SELECT usage,word_key,book_key FROM LOOKUPS''')
 allrows=cursor.fetchall()
 cursor.execute('''SELECT id,title FROM BOOK_INFO''')
 books=cursor.fetchall()
-#fetch como string ^^ 
+#fetch como string 
 
 #busca part-of-speech e definições
 def definitions(entry):
@@ -75,7 +93,7 @@ for word in allrows:
 	for entry in entrys:
 		keles=entry.findall('k_ele')
 		for kele in keles:
-			if(wordcheck == kele.find('keb').text and not found): #alterar essa parte, checando o msm node várias vezes
+			if(wordcheck == kele.find('keb').text and not found):
 				writer.writerow({'word':wordcheck,'phrase' : word[0], 'reading' : readings(entry),'meaning':definitions(entry),'book':searchbooks(bookkey)})
 				i+=1
 				print (i)
